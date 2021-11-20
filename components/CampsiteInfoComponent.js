@@ -3,7 +3,7 @@ import { Text, View, ScrollView, FlatList, Modal, Button, StyleSheet } from 'rea
 import { Card, Icon, Input, Rating, AirbnbRating } from 'react-native-elements';
 import { connect } from "react-redux";
 import { baseUrl } from "../shared/baseUrl";
-import { postFavorite } from '../redux/ActionCreators';
+import { postFavorite, postComment } from '../redux/ActionCreators';
 
 
 const MapStateToProps = state => {
@@ -106,8 +106,8 @@ class CampsiteInfo extends Component {
     }
 
 
-    handleComment(campsiteId, rating, author, text) {
-        this.props.postComment(campsiteId, rating, author, text)
+    handleComment(campsiteId) {
+        this.props.postComment(campsiteId, this.state.rating, this.state.author, this.state.text)
         this.toggleModal();
     }
 
@@ -131,6 +131,7 @@ class CampsiteInfo extends Component {
     render() {
         const campsiteId = this.props.navigation.getParam('campsiteId');
         const campsite = this.props.campsites.campsites.filter(campsite => campsite.id === campsiteId)[0];
+        console.log('ABCD',this.props.comments)
         const comments = this.props.comments.comments.filter(comment => comment.campsiteId === campsiteId);
         return (
             <ScrollView>
@@ -154,23 +155,19 @@ class CampsiteInfo extends Component {
                         onFinishRating={rating => this.setState({rating: rating})}
                     />
                     <Input 
-                        placeholder="Author"
-                        leftIcon= {
-                            <Icon
-                            name="user-o"
-                            type="font-awesome"
-                            /> }
-                        leftIconContainerStyle={{paddingRight: 10}}
-                        OnChangeText={author => this.setState({author: author})}
+                        placeholder='Author'
+                        leftIcon={{ 
+                                type: 'font-awesome', 
+                                name: 'user-o'}}
+                        leftIconContainerStyle={{paddingRight:10}}
+                        onChangeText={(author)=>this.setState({author: author})}
                         value={this.state.author}
                     />
                     <Input 
                         placeholder="Comment"
-                        leftIcon= {
-                            <Icon
-                            name="comment-o"
-                            type="font-awesome"
-                            /> }
+                        leftIcon= {{
+                            name:"comment-o",
+                            type:"font-awesome" }}
                         leftIconContainerStyle={{paddingRight: 10}}
                         OnChangeText={rating => this.setState({rating: rating})}
                         value={this.state.comment}
